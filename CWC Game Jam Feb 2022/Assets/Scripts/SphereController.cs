@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SphereController : MonoBehaviour
 {
-    public float playerSpeed = 10f;
+    [SerializeField] private float torqueSpeed = 10f;
+    [SerializeField] private float forceSpeed;
+    [SerializeField] private float jumpForce = 3;
+    [SerializeField] private float speed;
+    public float gravityModifier;
+    public bool isOnGround = true;
     private Rigidbody playerRb;
     private Camera cam;
-
-    public float jumpForce = 3;
+    [SerializeField] TextMeshProUGUI speedometerText;
     public SphereCollider col;
     public LayerMask groundLayers;
-    bool isGrounded;
-
 
     // Start is called before the first frame update
     void Start()
@@ -20,28 +23,42 @@ public class SphereController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         cam = Camera.main;
         col = GetComponent<SphereCollider>();
+        Physics.gravity *= gravityModifier;
     }
 
-    private void Update()
-    {
-        //jump
-
-        isGrounded = Physics.CheckCapsule(col.bounds.center, new Vector3(col.bounds.center.x, col.bounds.min.y, col.bounds.center.z), col.radius * .9f, groundLayers);
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-
-        {
-
-            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.Impulse);
-
-        }
-
-    }
+    
 
     // Update is called once per frame
     void FixedUpdate()
     {
         PlayerMovement();
+        Jump();
+
+        speed = Mathf.Round(playerRb.velocity.magnitude * 2.237f);
+        speedometerText.SetText("Speed: " + speed + "mph");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isOnGround = true;
+        }
+        else
+        {
+            isOnGround = false;
+        }   
+    }
+
+    private void Jump()
+    {
+        //isOnGrounded = Physics.CheckCapsule(col.bounds.center, new Vector3(col.bounds.center.x, col.bounds.min.y, col.bounds.center.z), col.radius * .9f, groundLayers);
+
+        if (Input.GetButtonDown("Jump") && isOnGround)
+        {
+            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
+            isOnGround = false;
+        }
     }
 
     // Moves the player
@@ -65,19 +82,22 @@ public class SphereController : MonoBehaviour
         right.Normalize();
 
         // Set the direction for the player to move
-        //Vector3 dir = right * horizontalInput + forward * verticalInput;
-        Vector3 dir = right * verticalInput + forward * (-horizontalInput);
+        Vector3 forceDir = right * horizontalInput + forward * verticalInput;
+        Vector3 torqueDir = right * verticalInput + forward * (-horizontalInput);
 
         // Set the direction's magnitude to 1 so that it does not interfere with the movement speed
-        dir.Normalize();
+        torqueDir.Normalize();
 
         // Move the player by the direction multiplied by speed and delta time 
-        playerRb.AddTorque(playerSpeed * Time.deltaTime * dir, ForceMode.Acceleration);
+        playerRb.AddTorque(torqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
 
-        // Set rotation to direction of movement if moving
-        //if (dir != Vector3.zero)
-        //{
-        //    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(forward), 0.2f);
-        //}
+        if (isOnGround == true)
+        {
+            playerRb.AddForce(forceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
+        }
+        else
+        {
+            playerRb.AddForce((forceSpeed/8) * Time.deltaTime * forceDir, ForceMode.Acceleration);
+        }
     }
 }
