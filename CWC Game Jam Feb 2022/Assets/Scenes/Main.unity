@@ -189,7 +189,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313720674}
-  m_LocalRotation: {x: 0.12982236, y: -0.27324167, z: 0.037245113, w: 0.9524169}
+  m_LocalRotation: {x: 0.12982236, y: -0.2732417, z: 0.03724512, w: 0.9524169}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -272,8 +272,8 @@ MonoBehaviour:
   m_BindingMode: 5
   m_FollowOffset: {x: 0, y: 5, z: -18}
   m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_YDamping: 0
+  m_ZDamping: 0
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -580,9 +580,9 @@ GameObject:
   - component: {fileID: 855961985}
   - component: {fileID: 855961984}
   - component: {fileID: 855961989}
-  m_Layer: 0
-  m_Name: Sphere
-  m_TagString: Untagged
+  m_Layer: 6
+  m_Name: Player
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -595,14 +595,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855961983}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 20
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!135 &855961985
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -674,7 +674,7 @@ Transform:
   m_GameObject: {fileID: 855961983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 216.55, y: 5, z: 69.3}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -691,7 +691,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5143d0dde8e4143c8bb400c69b82e0f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 500
+  playerSpeed: 100000
+  jumpForce: 10
+  col: {fileID: 855961985}
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1281,7 +1286,7 @@ MonoBehaviour:
   m_CollideAgainst:
     serializedVersion: 2
     m_Bits: 1
-  m_IgnoreTag: 
+  m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1290,7 +1295,7 @@ MonoBehaviour:
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
   m_CameraRadius: 0.1
-  m_Strategy: 1
+  m_Strategy: 2
   m_MaximumEffort: 4
   m_SmoothingTime: 0
   m_Damping: 0

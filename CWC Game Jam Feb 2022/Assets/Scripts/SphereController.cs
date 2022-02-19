@@ -7,12 +7,35 @@ public class SphereController : MonoBehaviour
     public float playerSpeed = 10f;
     private Rigidbody playerRb;
     private Camera cam;
-    
+
+    public float jumpForce = 3;
+    public SphereCollider col;
+    public LayerMask groundLayers;
+    bool isGrounded;
+
+
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
         cam = Camera.main;
+        col = GetComponent<SphereCollider>();
+    }
+
+    private void Update()
+    {
+        //jump
+
+        isGrounded = Physics.CheckCapsule(col.bounds.center, new Vector3(col.bounds.center.x, col.bounds.min.y, col.bounds.center.z), col.radius * .9f, groundLayers);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+
+        {
+
+            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.Impulse);
+
+        }
+
     }
 
     // Update is called once per frame
@@ -42,13 +65,14 @@ public class SphereController : MonoBehaviour
         right.Normalize();
 
         // Set the direction for the player to move
-        Vector3 dir = right * horizontalInput + forward * verticalInput;
+        //Vector3 dir = right * horizontalInput + forward * verticalInput;
+        Vector3 dir = right * verticalInput + forward * (-horizontalInput);
 
         // Set the direction's magnitude to 1 so that it does not interfere with the movement speed
         dir.Normalize();
 
         // Move the player by the direction multiplied by speed and delta time 
-        playerRb.AddForce(playerSpeed * Time.deltaTime * dir);
+        playerRb.AddTorque(playerSpeed * Time.deltaTime * dir, ForceMode.Acceleration);
 
         // Set rotation to direction of movement if moving
         //if (dir != Vector3.zero)
