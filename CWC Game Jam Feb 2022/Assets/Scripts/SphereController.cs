@@ -5,9 +5,10 @@ using TMPro;
 
 public class SphereController : MonoBehaviour
 {
-    [SerializeField] private float torqueSpeed = 10f;
-    [SerializeField] private float forceSpeed;
-    [SerializeField] private float jumpForce = 3;
+    [SerializeField] private float addTorqueSpeed = 10f;
+    [SerializeField] private float addForceSpeed;
+    [SerializeField] private float airborneForceSpeed;
+    //[SerializeField] private float jumpForce = 3;
     [SerializeField] private float speed;
     public float gravityModifier;
     public bool isOnGround = true;
@@ -32,9 +33,10 @@ public class SphereController : MonoBehaviour
     void FixedUpdate()
     {
         PlayerMovement();
-        Jump();
+        //Jump();
 
-        speed = Mathf.Round(playerRb.velocity.magnitude * 2.237f);
+        speed = Mathf.Round(playerRb.velocity.magnitude);
+        //* 2.237f
         speedometerText.SetText("Speed: " + speed + "mph");
     }
 
@@ -43,23 +45,22 @@ public class SphereController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
-        }
-        else
-        {
-            isOnGround = false;
-        }   
+        } 
     }
 
-    private void Jump()
+    private void OnCollisionExit(Collision collision)
     {
-        //isOnGrounded = Physics.CheckCapsule(col.bounds.center, new Vector3(col.bounds.center.x, col.bounds.min.y, col.bounds.center.z), col.radius * .9f, groundLayers);
-
-        if (Input.GetButtonDown("Jump") && isOnGround)
-        {
-            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
-            isOnGround = false;
-        }
+        isOnGround = false;
     }
+
+    //private void Jump()
+    //{
+    //    if (Input.GetButtonDown("Jump") && isOnGround)
+    //    {
+    //        playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
+    //        isOnGround = false;
+    //    }
+    //}
 
     // Moves the player
     void PlayerMovement()
@@ -87,17 +88,20 @@ public class SphereController : MonoBehaviour
 
         // Set the direction's magnitude to 1 so that it does not interfere with the movement speed
         torqueDir.Normalize();
+        forceDir.Normalize();
+
+        
 
         // Move the player by the direction multiplied by speed and delta time 
-        playerRb.AddTorque(torqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
+        playerRb.AddTorque(addTorqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
 
         if (isOnGround == true)
         {
-            playerRb.AddForce(forceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
+            playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
         }
         else
         {
-            playerRb.AddForce((forceSpeed/8) * Time.deltaTime * forceDir, ForceMode.Acceleration);
+            playerRb.AddForce(airborneForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
         }
     }
 }
