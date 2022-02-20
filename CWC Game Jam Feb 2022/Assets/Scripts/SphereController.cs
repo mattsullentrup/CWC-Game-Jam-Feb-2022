@@ -8,13 +8,15 @@ public class SphereController : MonoBehaviour
     [SerializeField] private float addTorqueSpeed = 10f;
     [SerializeField] private float addForceSpeed;
     [SerializeField] private float airborneForceSpeed;
+    [SerializeField] private bool countAvailable;
     //[SerializeField] private float jumpForce = 3;
-    [SerializeField] private float speed;
+    public float score = 0;
+    [SerializeField] TextMeshProUGUI scoreText;
     public float gravityModifier;
     public bool isOnGround = true;
     private Rigidbody playerRb;
     private Camera cam;
-    [SerializeField] TextMeshProUGUI speedometerText;
+    //private GameManager gameManager;
     public SphereCollider col;
     public LayerMask groundLayers;
 
@@ -25,19 +27,19 @@ public class SphereController : MonoBehaviour
         cam = Camera.main;
         col = GetComponent<SphereCollider>();
         Physics.gravity *= gravityModifier;
+        //gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
-    
+    private void Update()
+    {
+        StartCoroutine(CountScore());
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         PlayerMovement();
         //Jump();
-
-        speed = Mathf.Round(playerRb.velocity.magnitude);
-        //* 2.237f
-        speedometerText.SetText("Speed: " + speed + "mph");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -45,13 +47,41 @@ public class SphereController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
+            //StopCoroutine(CountScore());
         } 
     }
 
     private void OnCollisionExit(Collision collision)
     {
         isOnGround = false;
+        //StartCoroutine(CountScore());
     }
+
+    IEnumerator CountScore()
+    {
+        if (isOnGround == false)
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+            score += (Time.deltaTime * GameManager.Manager.playerSpeed);
+            scoreText.text = "Score: " + score;
+        }
+    }
+
+    //void CountScore()
+    //{
+    //    if (countAvailable == true && isOnGround == false)
+    //    {
+    //        score *= Time.deltaTime;
+    //        scoreText.text = "Score: " + Mathf.Round(score);
+    //    }
+    //}
+
+    //IEnumerator WaitToCount()
+    //{
+    //    countAvailable = false;
+    //    yield return new WaitForSeconds(0.25f);
+    //    countAvailable = true;
+    //}
 
     //private void Jump()
     //{
