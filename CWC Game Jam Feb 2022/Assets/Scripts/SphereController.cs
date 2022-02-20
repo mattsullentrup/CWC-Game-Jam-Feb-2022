@@ -81,7 +81,7 @@ void CountScore()
     {
         if (isOnGround == false)
         {
-            score += (Time.deltaTime * GameManager.Manager.playerSpeed);
+            score += (Time.deltaTime * Mathf.Exp(7));
             scoreText.text = "Score: " + Mathf.Round(score);
         }
     }
@@ -160,6 +160,19 @@ void CountScore()
         if (transform.position.x > 5000)
         {
             playerRb.AddForce(100000 * Time.deltaTime * Vector3.left, ForceMode.Acceleration);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (GameManager.Manager.isGameActive == true)
+        {
+            if (other.gameObject.CompareTag("Capsule"))
+            {
+                GameManager.Manager.timeRemaining += 15f;
+                Destroy(other.gameObject);
+            }
+            
         }
     }
 }

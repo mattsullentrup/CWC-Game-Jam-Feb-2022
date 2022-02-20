@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Manager { get; private set; }
     [SerializeField] TextMeshProUGUI speedometerText;
     public TextMeshProUGUI gameOverText;
-    private float timeRemaining = 120.0f;
+    public float timeRemaining = 180.0f;
     public TextMeshProUGUI timerText;
     private Rigidbody playerRb;
     public bool isGameActive;
