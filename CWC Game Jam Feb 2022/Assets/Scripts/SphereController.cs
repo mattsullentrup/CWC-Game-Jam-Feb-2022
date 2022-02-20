@@ -22,6 +22,19 @@ public class SphereController : MonoBehaviour
     public LayerMask groundLayers;
     public float distToGround;
 
+    private void Awake()
+    {
+        if (Controller != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            Controller = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,33 +62,9 @@ public class SphereController : MonoBehaviour
             GroundCheck();
             PlayerMovement();
             Jump();
+            ConstrainPlayerPosition();
         }
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Ground"))
-    //    {
-    //        isOnGround = true;
-    //        //StopCoroutine(CountScore());
-    //    } 
-    //}
-
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    isOnGround = false;
-    //    //StartCoroutine(CountScore());
-    //}
-
-    //IEnumerator CountScore()
-    //{
-    //    if (isOnGround == false)
-    //    {
-    //        yield return new WaitForSecondsRealtime(0.5f);
-    //        score += (Time.deltaTime * GameManager.Manager.playerSpeed);
-    //        scoreText.text = "Score: " + score;
-    //    }
-    //}
 
     void GroundCheck() {
    if (Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.5f))
@@ -148,6 +137,29 @@ void CountScore()
         else
         {
             playerRb.AddForce(airborneForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
+        }
+    }
+
+    void ConstrainPlayerPosition() //Abstraction
+    {
+        if (transform.position.z < 0)
+        {
+            playerRb.AddForce(100000 * Time.deltaTime * Vector3.forward, ForceMode.Acceleration);
+        }
+
+        if (transform.position.z > 5000)
+        {
+            playerRb.AddForce(100000 * Time.deltaTime * Vector3.back, ForceMode.Acceleration);
+        }
+
+        if (transform.position.x < 0)
+        {
+            playerRb.AddForce(100000 * Time.deltaTime * Vector3.right, ForceMode.Acceleration);
+        }
+
+        if (transform.position.x > 5000)
+        {
+            playerRb.AddForce(100000 * Time.deltaTime * Vector3.left, ForceMode.Acceleration);
         }
     }
 }

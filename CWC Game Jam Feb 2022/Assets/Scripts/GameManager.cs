@@ -13,15 +13,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Manager { get; private set; }
     [SerializeField] TextMeshProUGUI speedometerText;
     public TextMeshProUGUI gameOverText;
-    private float timeRemaining = 60.0f;
+    private float timeRemaining = 120.0f;
     public TextMeshProUGUI timerText;
     private Rigidbody playerRb;
     public bool isGameActive;
     public Button restartButton;
+    public TextMeshProUGUI titleText;
+    public Button startButton;
 
     private void Awake()
     {
-        isGameActive = true;
+        isGameActive = false;
 
         if (Manager != null)
         {
@@ -74,6 +76,8 @@ public class GameManager : MonoBehaviour
     {
         isGameActive = true;
         SphereController.Controller.score = 0;
+        titleText.gameObject.SetActive(false);
+        startButton.gameObject.SetActive(false);
     }
 
         public void GameOver()
