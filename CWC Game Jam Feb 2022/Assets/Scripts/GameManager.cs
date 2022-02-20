@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        isGameActive = true;
 
         if (Manager != null)
         {
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
-        isGameActive = true;
+        
         AddToTimer(0);
     }
 
@@ -70,11 +70,22 @@ public class GameManager : MonoBehaviour
         timeRemaining += timeToAdd;
     }
 
-    public void GameOver()
+    public void StartGame()
     {
-        //restartButton.gameObject.SetActive(true);
+        isGameActive = true;
+        SphereController.Controller.score = 0;
+    }
+
+        public void GameOver()
+    {
+        restartButton.gameObject.SetActive(true);
         gameOverText.gameObject.SetActive(true);
         isGameActive = false;
 
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -5,20 +5,22 @@ using TMPro;
 
 public class SphereController : MonoBehaviour
 {
+    public static SphereController Controller { get; set; }
     [SerializeField] private float addTorqueSpeed = 10f;
     [SerializeField] private float addForceSpeed;
     [SerializeField] private float airborneForceSpeed;
     [SerializeField] private bool countAvailable;
-    //[SerializeField] private float jumpForce = 3;
+    [SerializeField] private float jumpForce = 3;
     public float score = 0;
     [SerializeField] TextMeshProUGUI scoreText;
     public float gravityModifier;
     public bool isOnGround = true;
     private Rigidbody playerRb;
     private Camera cam;
-    //private GameManager gameManager;
+   
     public SphereCollider col;
     public LayerMask groundLayers;
+    public float distToGround;
 
     // Start is called before the first frame update
     void Start()
@@ -27,70 +29,84 @@ public class SphereController : MonoBehaviour
         cam = Camera.main;
         col = GetComponent<SphereCollider>();
         Physics.gravity *= gravityModifier;
-        //gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        
+        distToGround = col.bounds.extents.y;
     }
 
     private void Update()
     {
-        StartCoroutine(CountScore());
+        if (GameManager.Manager.isGameActive == true)
+        {
+            CountScore();
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        PlayerMovement();
-        //Jump();
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (GameManager.Manager.isGameActive == true)
         {
-            isOnGround = true;
-            //StopCoroutine(CountScore());
-        } 
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        isOnGround = false;
-        //StartCoroutine(CountScore());
-    }
-
-    IEnumerator CountScore()
-    {
-        if (isOnGround == false)
-        {
-            yield return new WaitForSecondsRealtime(0.5f);
-            score += (Time.deltaTime * GameManager.Manager.playerSpeed);
-            scoreText.text = "Score: " + score;
+            GroundCheck();
+            PlayerMovement();
+            Jump();
         }
     }
 
-    //void CountScore()
+    //private void OnCollisionEnter(Collision collision)
     //{
-    //    if (countAvailable == true && isOnGround == false)
+    //    if (collision.gameObject.CompareTag("Ground"))
     //    {
-    //        score *= Time.deltaTime;
-    //        scoreText.text = "Score: " + Mathf.Round(score);
+    //        isOnGround = true;
+    //        //StopCoroutine(CountScore());
+    //    } 
+    //}
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    isOnGround = false;
+    //    //StartCoroutine(CountScore());
+    //}
+
+    //IEnumerator CountScore()
+    //{
+    //    if (isOnGround == false)
+    //    {
+    //        yield return new WaitForSecondsRealtime(0.5f);
+    //        score += (Time.deltaTime * GameManager.Manager.playerSpeed);
+    //        scoreText.text = "Score: " + score;
     //    }
     //}
 
-    //IEnumerator WaitToCount()
-    //{
-    //    countAvailable = false;
-    //    yield return new WaitForSeconds(0.25f);
-    //    countAvailable = true;
-    //}
+    void GroundCheck() {
+   if (Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.5f))
+        {
+            isOnGround = true;
+        }
+        else
+        {
+            isOnGround = false;
+        }
+ }
 
-    //private void Jump()
-    //{
-    //    if (Input.GetButtonDown("Jump") && isOnGround)
-    //    {
-    //        playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
-    //        isOnGround = false;
-    //    }
-    //}
+void CountScore()
+    {
+        if (isOnGround == false)
+        {
+            score += (Time.deltaTime * GameManager.Manager.playerSpeed);
+            scoreText.text = "Score: " + Mathf.Round(score);
+        }
+    }
+
+
+
+    private void Jump()
+    {
+        if (Input.GetButtonDown("Jump") && isOnGround)
+        {
+            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
+            //isOnGround = false;
+        }
+    }
 
     // Moves the player
     void PlayerMovement()
