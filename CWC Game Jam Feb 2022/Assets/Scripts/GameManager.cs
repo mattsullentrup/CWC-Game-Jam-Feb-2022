@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -75,7 +73,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         isGameActive = true;
-        SphereController.Controller.score = 0;
+        ScoreManager.Score.score = 0;
         titleText.gameObject.SetActive(false);
         startButton.gameObject.SetActive(false);
     }
@@ -85,7 +83,6 @@ public class GameManager : MonoBehaviour
         restartButton.gameObject.SetActive(true);
         gameOverText.gameObject.SetActive(true);
         isGameActive = false;
-
     }
 
     public void RestartGame()

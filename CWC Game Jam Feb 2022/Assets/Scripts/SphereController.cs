@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -9,21 +7,19 @@ public class SphereController : MonoBehaviour
     [SerializeField] private float addTorqueSpeed = 10f;
     [SerializeField] private float addForceSpeed;
     [SerializeField] private float airborneForceSpeed;
-    [SerializeField] private bool countAvailable;
-    [SerializeField] private float jumpForce = 3;
-    public float score = 0;
-    [SerializeField] TextMeshProUGUI scoreText;
-    public float gravityModifier;
+    [SerializeField] private float turnSpeed = 5;
+    [SerializeField] private float forwardSpeed = 2;
     public bool isOnGround = true;
-    private Rigidbody playerRb;
+    public Rigidbody playerRb;
     private Camera cam;
    
     public SphereCollider col;
     public LayerMask groundLayers;
-    public float distToGround;
+    public float distToGround = 1f;
 
     private void Awake()
     {
+        
         if (Controller != null)
         {
             Destroy(gameObject);
@@ -41,18 +37,11 @@ public class SphereController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         cam = Camera.main;
         col = GetComponent<SphereCollider>();
-        Physics.gravity *= gravityModifier;
-        
-        distToGround = col.bounds.extents.y;
+        isOnGround = true;
+        //distToGround = col.bounds.extents.y;
     }
 
-    private void Update()
-    {
-        if (GameManager.Manager.isGameActive == true)
-        {
-            CountScore();
-        }
-    }
+    
 
     // Update is called once per frame
     void FixedUpdate()
@@ -61,7 +50,6 @@ public class SphereController : MonoBehaviour
         {
             GroundCheck();
             PlayerMovement();
-            Jump();
             ConstrainPlayerPosition();
         }
     }
@@ -70,32 +58,20 @@ public class SphereController : MonoBehaviour
    if (Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.5f))
         {
             isOnGround = true;
+            ScoreManager.Score.scoreMultiplier = 1;
         }
         else
         {
             isOnGround = false;
+            ScoreManager.Score.scoreMultiplier *= Time.deltaTime;
         }
  }
 
-void CountScore()
-    {
-        if (isOnGround == false)
-        {
-            score += (Time.deltaTime * Mathf.Exp(7));
-            scoreText.text = "Score: " + Mathf.Round(score);
-        }
-    }
 
 
 
-    private void Jump()
-    {
-        if (Input.GetButtonDown("Jump") && isOnGround)
-        {
-            playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
-            //isOnGround = false;
-        }
-    }
+
+   
 
     // Moves the player
     void PlayerMovement()
@@ -118,26 +94,26 @@ void CountScore()
         right.Normalize();
 
         // Set the direction for the player to move
-        Vector3 forceDir = right * horizontalInput + forward * verticalInput;
+        Vector3 forceDir = right * (horizontalInput * turnSpeed) + forward * (verticalInput * forwardSpeed);
         Vector3 torqueDir = right * verticalInput + forward * (-horizontalInput);
 
         // Set the direction's magnitude to 1 so that it does not interfere with the movement speed
         torqueDir.Normalize();
-        forceDir.Normalize();
+        //forceDir.Normalize();
 
         
 
         // Move the player by the direction multiplied by speed and delta time 
         playerRb.AddTorque(addTorqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
 
-        if (isOnGround == true)
-        {
+        //if (isOnGround == true)
+        //{
             playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
-        }
-        else
-        {
-            playerRb.AddForce(airborneForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
-        }
+        //}
+        //else
+        //{
+        //    playerRb.AddForce(airborneForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
+        //}
     }
 
     void ConstrainPlayerPosition() //Abstraction
@@ -165,14 +141,10 @@ void CountScore()
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GameManager.Manager.isGameActive == true)
-        {
-            if (other.gameObject.CompareTag("Capsule"))
+            if (other.gameObject.CompareTag("Capsule") && GameManager.Manager.isGameActive == true)
             {
                 GameManager.Manager.timeRemaining += 15f;
                 Destroy(other.gameObject);
-            }
-            
         }
     }
 }
