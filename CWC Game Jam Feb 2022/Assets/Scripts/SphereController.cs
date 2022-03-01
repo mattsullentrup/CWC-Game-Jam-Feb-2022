@@ -37,11 +37,9 @@ public class SphereController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         cam = Camera.main;
         col = GetComponent<SphereCollider>();
-        isOnGround = true;
+        //isOnGround = true;
         //distToGround = col.bounds.extents.y;
     }
-
-    
 
     // Update is called once per frame
     void FixedUpdate()
@@ -50,7 +48,6 @@ public class SphereController : MonoBehaviour
         {
             GroundCheck();
             PlayerMovement();
-            ConstrainPlayerPosition();
         }
     }
 
@@ -116,28 +113,7 @@ public class SphereController : MonoBehaviour
         //}
     }
 
-    void ConstrainPlayerPosition() //Abstraction
-    {
-        if (transform.position.z < 0)
-        {
-            playerRb.AddForce(100000 * Time.deltaTime * Vector3.forward, ForceMode.Acceleration);
-        }
-
-        if (transform.position.z > 5000)
-        {
-            playerRb.AddForce(100000 * Time.deltaTime * Vector3.back, ForceMode.Acceleration);
-        }
-
-        if (transform.position.x < 0)
-        {
-            playerRb.AddForce(100000 * Time.deltaTime * Vector3.right, ForceMode.Acceleration);
-        }
-
-        if (transform.position.x > 5000)
-        {
-            playerRb.AddForce(100000 * Time.deltaTime * Vector3.left, ForceMode.Acceleration);
-        }
-    }
+    
 
     private void OnTriggerEnter(Collider other)
     {

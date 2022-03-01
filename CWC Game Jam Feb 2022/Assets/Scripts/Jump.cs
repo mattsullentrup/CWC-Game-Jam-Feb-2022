@@ -26,7 +26,7 @@ public class Jump : MonoBehaviour
 
     private void PlayerJump()
     {
-        if (Input.GetButtonDown("Jump") && jumpAvailable)
+        if (Input.GetButtonDown("Jump") && jumpAvailable == true)
         {
             SphereController.Controller.playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
             jumpAvailable = false;

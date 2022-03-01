@@ -6,7 +6,7 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager Score { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
     public float score = 0;
-    public float scoreMultiplier;
+    public float scoreMultiplier = 1;
 
     private void Awake()
     {
