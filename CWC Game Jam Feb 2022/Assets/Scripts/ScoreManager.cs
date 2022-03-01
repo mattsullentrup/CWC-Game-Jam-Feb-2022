@@ -34,7 +34,7 @@ public class ScoreManager : MonoBehaviour
     {
         if (SphereController.Controller.isOnGround == false)
         {
-            score += (Time.deltaTime * scoreMultiplier);
+            score += (Time.deltaTime * scoreMultiplier * 2);
             scoreText.text = "Score: " + Mathf.Round(score);
         }
     }

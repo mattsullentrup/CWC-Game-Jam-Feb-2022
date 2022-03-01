@@ -52,7 +52,7 @@ public class SphereController : MonoBehaviour
     }
 
     void GroundCheck() {
-   if (Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.5f))
+   if (Physics.Raycast(transform.position, Vector3.down, distToGround + 4f))
         {
             isOnGround = true;
             ScoreManager.Score.scoreMultiplier = 1;
@@ -60,14 +60,9 @@ public class SphereController : MonoBehaviour
         else
         {
             isOnGround = false;
-            ScoreManager.Score.scoreMultiplier *= Time.deltaTime;
+            ScoreManager.Score.scoreMultiplier += Time.deltaTime * 5;
         }
  }
-
-
-
-
-
    
 
     // Moves the player
