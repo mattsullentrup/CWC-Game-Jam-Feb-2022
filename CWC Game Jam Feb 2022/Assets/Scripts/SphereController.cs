@@ -12,14 +12,14 @@ public class SphereController : MonoBehaviour
     public bool isOnGround = true;
     public Rigidbody playerRb;
     private Camera cam;
-   
+
     public SphereCollider col;
     public LayerMask groundLayers;
     public float distToGround = 1f;
 
     private void Awake()
     {
-        
+
         if (Controller != null)
         {
             Destroy(gameObject);
@@ -51,8 +51,9 @@ public class SphereController : MonoBehaviour
         }
     }
 
-    void GroundCheck() {
-   if (Physics.Raycast(transform.position, Vector3.down, distToGround + 4f))
+    void GroundCheck()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, distToGround + 4f))
         {
             isOnGround = true;
             ScoreManager.Score.scoreMultiplier = 1;
@@ -62,8 +63,8 @@ public class SphereController : MonoBehaviour
             isOnGround = false;
             ScoreManager.Score.scoreMultiplier += Time.deltaTime * 5;
         }
- }
-   
+    }
+
 
     // Moves the player
     void PlayerMovement()
@@ -91,31 +92,34 @@ public class SphereController : MonoBehaviour
 
         // Set the direction's magnitude to 1 so that it does not interfere with the movement speed
         torqueDir.Normalize();
-        //forceDir.Normalize();
+        forceDir.Normalize();
 
-        
+
 
         // Move the player by the direction multiplied by speed and delta time 
         playerRb.AddTorque(addTorqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
+        playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Force);
 
-        //if (isOnGround == true)
-        //{
-            playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
-        //}
-        //else
-        //{
-        //    playerRb.AddForce(airborneForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
-        //}
+        if (isOnGround == true)
+        {
+            forwardSpeed = 3;
+            //turnSpeed = 4;
+        }
+        else
+        {
+            forwardSpeed = 1;
+            //turnSpeed = 2;
+        }
     }
 
-    
+
 
     private void OnTriggerEnter(Collider other)
     {
-            if (other.gameObject.CompareTag("Capsule") && GameManager.Manager.isGameActive == true)
-            {
-                GameManager.Manager.timeRemaining += 15f;
-                Destroy(other.gameObject);
+        if (other.gameObject.CompareTag("Capsule") && GameManager.Manager.isGameActive == true)
+        {
+            GameManager.Manager.timeRemaining += 15f;
+            Destroy(other.gameObject);
         }
     }
 }

@@ -4,7 +4,7 @@ public class Jump : MonoBehaviour
 {
     [SerializeField] private float jumpForce = 3;
     public float gravityModifier;
-    public bool jumpAvailable;
+    //public bool jumpAvailable;
 
     // Start is called before the first frame update
     void Awake()
@@ -15,7 +15,7 @@ public class Jump : MonoBehaviour
 
     private void Start()
     {
-        jumpAvailable = true;
+        //jumpAvailable = true;
     }
 
     // Update is called once per frame
@@ -26,18 +26,18 @@ public class Jump : MonoBehaviour
 
     private void PlayerJump()
     {
-        if (Input.GetButtonDown("Jump") && jumpAvailable == true)
+        if (Input.GetButtonDown("Jump") && SphereController.Controller.isOnGround == true)
         {
             SphereController.Controller.playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
-            jumpAvailable = false;
+            //jumpAvailable = false;
         }
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.CompareTag("Ground") && GameManager.Manager.isGameActive == true)
-        {
-            jumpAvailable = true;
-        }
-    }
+    //private void OnCollisionEnter(Collision other)
+    //{
+    //    if (other.gameObject.CompareTag("Ground") && GameManager.Manager.isGameActive == true)
+    //    {
+    //        jumpAvailable = true;
+    //    }
+    //}
 }
