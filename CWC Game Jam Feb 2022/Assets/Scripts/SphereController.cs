@@ -6,7 +6,7 @@ public class SphereController : MonoBehaviour
     public static SphereController Controller { get; set; }
     [SerializeField] private float addTorqueSpeed = 10f;
     [SerializeField] private float addForceSpeed;
-    [SerializeField] private float airborneForceSpeed;
+    //[SerializeField] private float airborneForceSpeed;
     [SerializeField] private float turnSpeed = 5;
     [SerializeField] private float forwardSpeed = 2;
     public bool isOnGround = true;
@@ -98,27 +98,28 @@ public class SphereController : MonoBehaviour
 
         // Move the player by the direction multiplied by speed and delta time 
         playerRb.AddTorque(addTorqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
-        playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Force);
+        playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
 
-        if (isOnGround == true)
-        {
-            forwardSpeed = 3;
-            //turnSpeed = 4;
-        }
-        else
-        {
-            forwardSpeed = 1;
-            //turnSpeed = 2;
-        }
+        //if (isOnGround == true)
+        //{
+        //    forwardSpeed = 3;
+        //    //turnSpeed = 4;
+        //}
+        //else
+        //{
+        //    forwardSpeed = 1;
+        //    //turnSpeed = 2;
+        //}
     }
 
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Capsule") && GameManager.Manager.isGameActive == true)
+        if (other.gameObject.CompareTag("Cube") && GameManager.Manager.isGameActive == true)
         {
             GameManager.Manager.timeRemaining += 15f;
+            ScoreManager.Score.score += 1000;
             Destroy(other.gameObject);
         }
     }

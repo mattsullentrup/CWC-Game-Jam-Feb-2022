@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Button restartButton;
     public TextMeshProUGUI titleText;
     public Button startButton;
+    public RawImage jumpIndicator;
 
     private void Awake()
     {
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
         ScoreManager.Score.score = 0;
         titleText.gameObject.SetActive(false);
         startButton.gameObject.SetActive(false);
+        Jump.JumpScript.jumpIndicator.gameObject.SetActive(true);
     }
 
         public void GameOver()
