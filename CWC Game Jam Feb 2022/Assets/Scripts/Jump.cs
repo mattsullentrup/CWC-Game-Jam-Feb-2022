@@ -5,15 +5,19 @@ public class Jump : MonoBehaviour
 {
     public static Jump JumpScript { get; set; }
     [SerializeField] private float jumpForce = 3;
-    public float gravityModifier;
+    //public float gravityModifier;
     public bool jumpAvailable;
     public RawImage jumpIndicator;
+
+    Rigidbody rb;
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
 
     // Start is called before the first frame update
     void Awake()
     {
-        Physics.gravity = new Vector3(0, -9.8F, 0);
-        Physics.gravity *= gravityModifier;
+        Physics.gravity = new Vector3(0, -9.81F, 0);
+        //Physics.gravity *= gravityModifier;
 
         if (JumpScript != null)
         {
@@ -24,11 +28,18 @@ public class Jump : MonoBehaviour
         {
             JumpScript = this;
         }
+
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
         jumpAvailable = true;
+    }
+
+    private void Update()
+    {
+        MarioJump();
     }
 
     // Update is called once per frame
@@ -37,9 +48,21 @@ public class Jump : MonoBehaviour
         PlayerJump();
     }
 
+    private void MarioJump()
+    {
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity += (fallMultiplier - 1) * Physics.gravity.y * Time.deltaTime * Vector3.up;
+        }
+        else if (rb.velocity.y > 0)
+        {
+            rb.velocity += (lowJumpMultiplier - 1) * Physics.gravity.y * Time.deltaTime * Vector3.up;
+        }
+    }
+
     private void PlayerJump()
     {
-        if (Input.GetButtonDown("Jump") && jumpAvailable == true)
+        if (Input.GetButton("Jump") && jumpAvailable == true)
         {
             SphereController.Controller.playerRb.AddForce(jumpForce * Time.deltaTime * Vector3.up, ForceMode.VelocityChange);
             jumpAvailable = false;

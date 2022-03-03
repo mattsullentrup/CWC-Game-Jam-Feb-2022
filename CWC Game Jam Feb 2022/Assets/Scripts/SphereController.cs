@@ -86,6 +86,17 @@ public class SphereController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
+        //if (isOnGround == true)
+        //{
+        //    forwardSpeed = 3;
+        //    turnSpeed = 4;
+        //}
+        //else
+        //{
+        //    forwardSpeed = 1;
+        //    turnSpeed = 2;
+        //}
+
         // Set the direction for the player to move
         Vector3 forceDir = right * (horizontalInput * turnSpeed) + forward * (verticalInput * forwardSpeed);
         Vector3 torqueDir = right * verticalInput + forward * (-horizontalInput);
@@ -100,16 +111,7 @@ public class SphereController : MonoBehaviour
         playerRb.AddTorque(addTorqueSpeed * Time.deltaTime * torqueDir, ForceMode.Acceleration);
         playerRb.AddForce(addForceSpeed * Time.deltaTime * forceDir, ForceMode.Acceleration);
 
-        //if (isOnGround == true)
-        //{
-        //    forwardSpeed = 3;
-        //    //turnSpeed = 4;
-        //}
-        //else
-        //{
-        //    forwardSpeed = 1;
-        //    //turnSpeed = 2;
-        //}
+        
     }
 
 
